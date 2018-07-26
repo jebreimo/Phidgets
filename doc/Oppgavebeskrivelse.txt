@@ -1,0 +1,102 @@
+Begin forwarded message:
+
+From: anders tveit <anders.tveit@gmail.com>
+Subject: Re: C or C++?
+Date: 18 December 2017 at 12:48:31 CET
+To: Natasha Barrett <nlb@natashabarrett.org>
+
+Ok, cool here it is:
+
+
+
+Lage en standalone applikasjon i C som kan kjøre i Debian Linux ( ver. 8 )
+Applikasjonen skal lese av 24 analoge sensorer ved hjelp av Phidgets API i VoltageRatio ( se lenker til doc,eks og API under)
+Avlesingen av disse 24 sensorene i float verdi skal deretter normaliseres,klippes mellom 0 - 1 (float) 
+Og sendes ut som opensoundcontrol (OSC) beskjeder over nettverk (UDP) ved å bruke opensoundcontrol protokoll
+ved hjelp av TinyOSC biblioteket. 
+Beskjedene sendes ut på fast IP adresse og port 8750. 
+Beskjedene skal være formatert i adresse: /fader/1, /fader/2, /fader/3 etc. ( korreponderer med sensorer 1-24)
+Slik at beskjed som mottas i andre enden ser slik ut: /fader/1 floatverdi
+
+Sensorbibliotek:
+--------------------
+Phidgets eksempler for VoltageRatioInput, ta utgangpunkt i denne:
+https://www.phidgets.com/downloads/phidget22/examples/c/VoltageRatioInput/Phidget22_VoltageRatioInput_C_Ex.zip
+og her: 
+https://www.phidgets.com/docs/Using_Multiple_Phidgets#Using_the_Hub_Port
+https://www.phidgets.com/docs/Best_Phidgets_Practices
+
+API:
+https://www.phidgets.com/?view=api
+I nedtrekksmenyene velg C i den første, den andre: HUB0000_0 - 6 USB VINT Hub Phidget, og den siste: Phidget API og VoltageRatioInput
+Var ikke direktelenker til disse beklager! 
+
+
+Ang.Phidgets Serienr og sensorporter i rekkefølge 1-24:
+
+PhidgetVoltageRatioInput ishubport=6 serialnumber=497201
+PhidgetVoltageRatioInput ishubport=2 serialnumber=497201
+PhidgetVoltageRatioInput ishubport=4 serialnumber=497201
+PhidgetVoltageRatioInput ishubport=3 serialnumber=497201
+PhidgetVoltageRatioInput ishubport=5 serialnumber=497201
+PhidgetVoltageRatioInput ishubport=1 serialnumber=497201
+PhidgetVoltageRatioInput ishubport=1 serialnumber=495445
+PhidgetVoltageRatioInput ishubport=2 serialnumber=495445
+PhidgetVoltageRatioInput ishubport=3 serialnumber=495445
+PhidgetVoltageRatioInput ishubport=6 serialnumber=495445
+PhidgetVoltageRatioInput ishubport=4 serialnumber=495445
+PhidgetVoltageRatioInput ishubport=5 serialnumber=495445
+PhidgetVoltageRatioInput ishubport=4 serialnumber=495450
+PhidgetVoltageRatioInput ishubport=6 serialnumber=495450
+PhidgetVoltageRatioInput ishubport=3 serialnumber=495450
+PhidgetVoltageRatioInput ishubport=2 serialnumber=495450
+PhidgetVoltageRatioInput ishubport=1 serialnumber=495450
+PhidgetVoltageRatioInput ishubport=5 serialnumber=495450
+PhidgetVoltageRatioInput ishubport=6 serialnumber=497044
+PhidgetVoltageRatioInput ishubport=3 serialnumber=497044
+PhidgetVoltageRatioInput ishubport=4 serialnumber=497044
+PhidgetVoltageRatioInput ishubport=1 serialnumber=497044
+PhidgetVoltageRatioInput ishubport=5 serialnumber=497044
+PhidgetVoltageRatioInput ishubport=2 serialnumber=497044
+
+
+// Leses av på datainterval 15ms på alle
+
+PhidgetVoltageRatioInput setDataInterval 15
+
+// Change Trigger verdi på alle avlesninger:
+
+PhidgetVoltageRatioInput setVoltageRatioChangeTrigger 0.002
+
+
+// normalisere (0 - 1) verdier fra sensor, min max funksjon f.eks. 
+min kan settes til = 0.03 og max = 0.998. Klippe verdiene til 0 - 1 (float)
+
+
+-------------------------------------
+
+OpenSoundControl bibliotek
+
+TinyOSC: https://github.com/mhroth/tinyosc
+( helt greit å bruke 1024 i buffstørrelse )
+
+------------------------------------
+
+
+
+
+
+On Mon, Dec 18, 2017 at 10:15 AM, Natasha Barrett <nlb@natashabarrett.org> wrote:
+Jan Erik says:
+
+> It's no big deal, but it tends to be easier to get third-party C libraries to compile and work.
+
+
+
+-- 
+Anders Tveit
+
+
+Tlf.95206752
+anders.tveit@gmail.com
+www.anderstveit.com
