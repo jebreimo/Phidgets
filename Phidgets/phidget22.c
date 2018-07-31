@@ -104,3 +104,10 @@ PhidgetReturnCode PhidgetVoltageRatioInput_setOnVoltageRatioChangeHandler(
 {
     return EPHIDGET_OK;
 }
+
+PhidgetReturnCode PhidgetVoltageRatioInput_setVoltageRatioChangeTrigger(
+    PhidgetVoltageRatioInputHandle ch,
+    double voltageRatioChangeTrigger)
+{
+    return EPHIDGET_OK;
+}
