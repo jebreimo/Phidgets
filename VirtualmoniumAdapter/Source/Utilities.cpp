@@ -7,7 +7,7 @@
 //****************************************************************************
 #include "Utilities.hpp"
 
-double elapsedSeconds(high_resolution_clock::time_point& startTime)
+double elapsedSeconds(const high_resolution_clock::time_point& startTime)
 {
     using namespace std::chrono;
     return duration<double>(high_resolution_clock::now() - startTime).count();

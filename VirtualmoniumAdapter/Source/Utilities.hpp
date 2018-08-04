@@ -10,4 +10,4 @@
 
 using std::chrono::high_resolution_clock;
 
-double elapsedSeconds(high_resolution_clock::time_point& startTime);
+double elapsedSeconds(const high_resolution_clock::time_point& startTime);

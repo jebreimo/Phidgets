@@ -19,9 +19,9 @@ public:
 
     void sendMessage(const std::string& name, double ratio);
 
-    void run();
-
     void start();
+
+    void startInSeparateThread();
 
     void stop();
 private:
@@ -30,5 +30,5 @@ private:
     std::thread m_Thread;
     std::string m_HostName;
     std::string m_ServiceName;
-    bool m_Cancel = false;
+    volatile bool m_Cancel = false;
 };

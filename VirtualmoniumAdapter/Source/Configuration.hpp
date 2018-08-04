@@ -23,7 +23,9 @@ struct Configuration
     Configuration() = default;
 
     std::vector <FaderDefinition> faders;
-    double faderChangeValueTrigger = 0.002;
+    double minimumFaderValueChange = 0.002;
+    double maximumDataInterval = 2;
+    uint32_t dataInterval = 15;
     std::string receivingHost = "localhost";
     std::string receivingPort = "8750";
 };

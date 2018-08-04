@@ -56,15 +56,24 @@ Configuration readConfiguration(const std::string& fileName)
             reader->nextValue();
             if (key == "ReceivingHost")
             {
-                reader->read(configuration.receivingPort);
+                reader->read(configuration.receivingHost);
             }
             else if (key == "ReceivingPort")
             {
                 reader->read(configuration.receivingPort);
             }
-            else if (key == "FaderValueChangeTrigger")
+            else if (key == "MinimumFaderValueChange")
             {
-                reader->read(configuration.faderChangeValueTrigger);
+                reader->read(configuration.minimumFaderValueChange);
+            }
+            else if (key == "MinimumDataInterval")
+            {
+                reader->read(configuration.dataInterval);
+            }
+            else if (key == "MaximumDataInterval")
+            {
+                reader->read(configuration.maximumDataInterval);
+                configuration.maximumDataInterval /= 1000;
             }
             else if (key == "Faders")
             {

@@ -7,6 +7,7 @@
 //****************************************************************************
 #include "UdpConnection.hpp"
 #include <cerrno>
+#include <cstring>
 #include <iostream>
 #include <thread>
 #include <netdb.h>
@@ -60,7 +61,7 @@ void UdpConnection::disconnect()
 void UdpConnection::send(const void* data, size_t size)
 {
     if (m_Socket != -1)
-        send(data, size);
+        ::send(m_Socket, data, size, 0);
 }
 
 bool UdpConnection::connectImpl()

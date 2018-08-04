@@ -47,6 +47,11 @@ PhidgetReturnCode Phidget_setChannel(PhidgetHandle phid, int channel)
     return EPHIDGET_OK;
 }
 
+PhidgetReturnCode Phidget_setDataInterval(PhidgetHandle phid, uint32_t di)
+{
+    return EPHIDGET_OK;
+}
+
 PhidgetReturnCode Phidget_setDeviceID(PhidgetHandle phid, Phidget_DeviceID deviceID)
 {
     return EPHIDGET_OK;
@@ -97,10 +102,24 @@ PhidgetReturnCode PhidgetVoltageRatioInput_delete(PhidgetVoltageRatioInputHandle
     return EPHIDGET_OK;
 }
 
+PhidgetReturnCode PhidgetVoltageRatioInput_setDataInterval(
+    PhidgetVoltageRatioInputHandle ch,
+    uint32_t dataInterval)
+{
+    return EPHIDGET_OK;
+}
+
 PhidgetReturnCode PhidgetVoltageRatioInput_setOnVoltageRatioChangeHandler(
     PhidgetVoltageRatioInputHandle ch,
     PhidgetVoltageRatioInput_OnVoltageRatioChangeCallback fptr,
     void *ctx)
+{
+    return EPHIDGET_OK;
+}
+
+PhidgetReturnCode PhidgetVoltageRatioInput_setSensorValueChangeTrigger(
+    PhidgetVoltageRatioInputHandle ch,
+    double sensorValueChangeTrigger)
 {
     return EPHIDGET_OK;
 }

@@ -23,7 +23,7 @@ void FaderMessageQueue::sendMessage(const std::string& name, double ratio)
     m_Messages[name] = ratio;
 }
 
-void FaderMessageQueue::run()
+void FaderMessageQueue::start()
 {
     using namespace std::chrono_literals;
 
@@ -56,7 +56,7 @@ void FaderMessageQueue::run()
                     }
                     m_Messages.clear();
                     previousMessageTime = high_resolution_clock::now();
-                    std::this_thread::sleep_for(1us);
+                    std::this_thread::sleep_for(1ms);
                 }
                 else
                 {
@@ -72,14 +72,15 @@ void FaderMessageQueue::run()
                 m_Mutex.unlock();
                 throw;
             }
+            m_Mutex.unlock();
         }
     }
 }
 
-void FaderMessageQueue::start()
+void FaderMessageQueue::startInSeparateThread()
 {
     m_Cancel = false;
-    m_Thread = std::thread([this](){run();});
+    m_Thread = std::thread([this](){start();});
 }
 
 void FaderMessageQueue::stop()
@@ -88,5 +89,9 @@ void FaderMessageQueue::stop()
     {
         m_Cancel = true;
         m_Thread.join();
+    }
+    else
+    {
+        m_Cancel = true;
     }
 }
