@@ -29,12 +29,9 @@ add_executable(${PROJECT_NAME}
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/External/lib)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/External/include)
 
-
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    message("It's GNU!")
     target_compile_options(${PROJECT_NAME} PUBLIC -pthread)
     target_link_libraries(${PROJECT_NAME} libYson.a phidget22 pthread)
 else()
     target_link_libraries(${PROJECT_NAME} libYson.a phidget22)
 endif()
-

@@ -13,24 +13,14 @@ struct FaderData
 {
     VoltageRatioInput handle;
     FaderMessageQueue* faderMessageQueue = nullptr;
-    Configuration* configuration = nullptr;
     std::string name;
-    double voltageRatio = -1.0;
-    high_resolution_clock::time_point previousUpdate = {};
 };
 
 void CCONV onVoltageRatioChangeHandler(PhidgetVoltageRatioInputHandle handle,
                                        void* ctx, double voltageRatio)
 {
     auto faderData = static_cast<FaderData*>(ctx);
-    auto cfg = faderData->configuration;
-    if (std::abs(voltageRatio - faderData->voltageRatio) > cfg->minimumFaderValueChange
-        || elapsedSeconds(faderData->previousUpdate) > cfg->maximumDataInterval)
-    {
-        faderData->faderMessageQueue->sendMessage(faderData->name, voltageRatio);
-        faderData->voltageRatio = voltageRatio;
-        faderData->previousUpdate = high_resolution_clock::now();
-    }
+    faderData->faderMessageQueue->sendMessage(faderData->name, voltageRatio);
 }
 
 void CCONV onErrorHandler(PhidgetHandle handle, void* ctx,
@@ -53,8 +43,6 @@ void initFader(const VoltageRatioInput& handle, int serialNumber,
 {
     CHECK_RESULT(Phidget_setOnErrorHandler(handle, onErrorHandler, ctx),
                  "failed to assign on error handler.");
-    CHECK_RESULT(Phidget_setIsHubPortDevice(handle, 1),
-                 "failed to make device a hub port device.");
     CHECK_RESULT(Phidget_setDeviceSerialNumber(handle, serialNumber),
                  "failed to assign device serial number.");
     CHECK_RESULT(Phidget_setIsHubPortDevice(handle, 1),
@@ -101,17 +89,16 @@ int main(int argc, char* argv[])
             auto& handle = faders[i].handle;
             auto& faderDef = configuration.faders[i];
             faders[i].name = faderDef.name;
-            faders[i].configuration = &configuration;
             initFader(handle, faderDef.serialNumber, faderDef.hubPort,
                       &faders[i]);
-            Phidget_setDataInterval(handle, configuration.dataInterval);
-            PhidgetVoltageRatioInput_setDataInterval(handle,
-                                                configuration.dataInterval);
             CHECK_RESULT(Phidget_openWaitForAttachment(handle, 5000),
                          "Unable to open device with serial number "
                          + std::to_string(faderDef.serialNumber)
                          + "and hub port number "
                          + std::to_string(faderDef.hubPort));
+            Phidget_setDataInterval(handle, configuration.dataInterval);
+            PhidgetVoltageRatioInput_setVoltageRatioChangeTrigger(
+                    handle, configuration.minimumFaderValueChange);
         }
 
         std::signal(SIGINT, signalHandler);

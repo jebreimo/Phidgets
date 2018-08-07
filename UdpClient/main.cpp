@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
         }
         auto n = recvfrom(socketFD, buffer, BUFSIZE, 0,
                           (sockaddr*)&clientAddr, &clientLen);
-        std::cout << "Received " << n << "bytes.\n";
+        std::cout << "Received " << n << " bytes.\n";
     }
 
     return 0;

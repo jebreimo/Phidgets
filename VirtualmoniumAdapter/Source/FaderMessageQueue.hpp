@@ -26,7 +26,8 @@ public:
     void stop();
 private:
     std::mutex m_Mutex;
-    std::unordered_map<std::string, double> m_Messages;
+    std::unordered_map<std::string, double> m_NewValues;
+    std::unordered_map<std::string, double> m_CurrentValues;
     std::thread m_Thread;
     std::string m_HostName;
     std::string m_ServiceName;

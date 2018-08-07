@@ -102,6 +102,13 @@ PhidgetReturnCode PhidgetVoltageRatioInput_delete(PhidgetVoltageRatioInputHandle
     return EPHIDGET_OK;
 }
 
+PhidgetReturnCode PhidgetVoltageRatioInput_getSensorValue(
+    PhidgetVoltageRatioInputHandle ch,
+    double *sensorValue)
+{
+    return EPHIDGET_OK;
+}
+
 PhidgetReturnCode PhidgetVoltageRatioInput_setDataInterval(
     PhidgetVoltageRatioInputHandle ch,
     uint32_t dataInterval)

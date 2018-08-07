@@ -20,7 +20,7 @@ FaderMessageQueue::FaderMessageQueue(std::string hostName,
 void FaderMessageQueue::sendMessage(const std::string& name, double ratio)
 {
     std::lock_guard<std::mutex> lock(m_Mutex);
-    m_Messages[name] = ratio;
+    m_NewValues[name] = ratio;
 }
 
 void FaderMessageQueue::start()
@@ -29,7 +29,7 @@ void FaderMessageQueue::start()
 
     high_resolution_clock::time_point previousMessageTime;
     UdpConnection connection(m_HostName, m_ServiceName);
-    char buffer[256];
+    char buffer[1024];
 
     while (!m_Cancel)
     {
@@ -40,39 +40,37 @@ void FaderMessageQueue::start()
         }
         if (m_Mutex.try_lock())
         {
-            try
+            if (!m_NewValues.empty())
             {
-                if (!m_Messages.empty())
+                tosc_bundle bundle;
+                tosc_writeBundle(&bundle, 0, buffer, sizeof(buffer));
+                for (auto& message : m_NewValues)
                 {
-                    for (auto& message : m_Messages)
-                    {
-                        int length = tosc_writeMessage(
-                                buffer, sizeof(buffer),
-                                message.first.c_str(),
-                                "f",
-                                float(message.second));
-                        if (length > 0)
-                            connection.send(buffer, size_t(length));
-                    }
-                    m_Messages.clear();
-                    previousMessageTime = high_resolution_clock::now();
-                    std::this_thread::sleep_for(1ms);
+                    tosc_writeNextMessage(&bundle, message.first.c_str(),
+                                          "f",
+                                          float(message.second));
+                    m_CurrentValues[message.first] = message.second;
+                }
+                m_NewValues.clear();
+                m_Mutex.unlock();
+                connection.send(buffer, tosc_getBundleLength(&bundle));
+                previousMessageTime = high_resolution_clock::now();
+            }
+            else
+            {
+                m_Mutex.unlock();
+                auto elapsedTime = elapsedSeconds(previousMessageTime);
+                if (elapsedTime < 30)
+                {
+                    std::this_thread::sleep_for(1us);
                 }
                 else
                 {
-                    auto elapsedTime = elapsedSeconds(previousMessageTime);
-                    if (elapsedTime < 60)
-                        std::this_thread::sleep_for(1us);
-                    else
-                        connection.disconnect();
+                    connection.disconnect();
+                    std::lock_guard<std::mutex> lock(m_Mutex);
+                    m_NewValues = m_CurrentValues;
                 }
             }
-            catch (...)
-            {
-                m_Mutex.unlock();
-                throw;
-            }
-            m_Mutex.unlock();
         }
     }
 }
